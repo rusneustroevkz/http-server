@@ -7,7 +7,7 @@ import (
 	"go.uber.org/fx"
 )
 
-func NewServeMux(routes []Route) *chi.Mux {
+func MountRoutes(routes []Route) *chi.Mux {
 	mux := chi.NewMux()
 
 	for _, route := range routes {

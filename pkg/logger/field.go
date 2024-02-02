@@ -11,3 +11,7 @@ func String(key, msg string) Field {
 func Error(err error) Field {
 	return Field(zap.Error(err))
 }
+
+func Int64(key string, value int64) Field {
+	return Field(zap.Int64(key, value))
+}

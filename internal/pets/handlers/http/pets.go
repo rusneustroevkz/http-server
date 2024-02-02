@@ -1,4 +1,4 @@
-package handlers
+package http
 
 import (
 	"github.com/go-chi/chi/v5"
@@ -7,19 +7,19 @@ import (
 	"net/http"
 )
 
-type EchoHandler struct {
+type PetsHTTPHandler struct {
 	log logger.Logger
 }
 
-func NewEchoHandler(log logger.Logger) *EchoHandler {
-	return &EchoHandler{log: log}
+func NewPetsHTTPHandler(log logger.Logger) *PetsHTTPHandler {
+	return &PetsHTTPHandler{log: log}
 }
 
-func (*EchoHandler) Pattern() string {
-	return "/echo"
+func (*PetsHTTPHandler) Pattern() string {
+	return "/pets"
 }
 
-func (h *EchoHandler) Routes() *chi.Mux {
+func (h *PetsHTTPHandler) Routes() *chi.Mux {
 	r := chi.NewRouter()
 
 	r.Route("/", func(r chi.Router) {
@@ -36,90 +36,90 @@ func (h *EchoHandler) Routes() *chi.Mux {
 
 // Get godoc
 // @Summary      Get handler
-// @Description  Simple echo get
-// @Tags         echo
+// @Description  Simple pets get
+// @Tags         pets
 // @Accept       json
 // @Produce      json
 // @Success      200  {string}  string
 // @Failure      400  {object}  errs.Error
 // @Failure      404  {object}  errs.Error
 // @Failure      500  {object}  errs.Error
-// @Router       /echo/{id} [get]
-func (h *EchoHandler) Get(w http.ResponseWriter, r *http.Request) {
+// @Router       /pets/{id} [get]
+func (h *PetsHTTPHandler) Get(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("get"))
 }
 
 // List godoc
 // @Summary      List handler
-// @Description  Simple echo list
-// @Tags         echo
+// @Description  Simple pets list
+// @Tags         pets
 // @Accept       json
 // @Produce      json
 // @Success      200  {string}  string
 // @Failure      400  {object}  errs.Error
 // @Failure      404  {object}  errs.Error
 // @Failure      500  {object}  errs.Error
-// @Router       /echo [get]
-func (h *EchoHandler) List(w http.ResponseWriter, r *http.Request) {
+// @Router       /pets [get]
+func (h *PetsHTTPHandler) List(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("list"))
 }
 
 // Delete godoc
 // @Summary      Delete handler
-// @Description  Simple echo list
-// @Tags         echo
+// @Description  Simple pets list
+// @Tags         pets
 // @Accept       json
 // @Produce      json
 // @Success      200  {string}  string
 // @Failure      400  {object}  errs.Error
 // @Failure      404  {object}  errs.Error
 // @Failure      500  {object}  errs.Error
-// @Router       /echo [delete]
-func (h *EchoHandler) Delete(w http.ResponseWriter, r *http.Request) {
+// @Router       /pets [delete]
+func (h *PetsHTTPHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("delete"))
 }
 
 // Save godoc
 // @Summary      Save handler
-// @Description  Simple echo put
-// @Tags         echo
+// @Description  Simple pets put
+// @Tags         pets
 // @Accept       json
 // @Produce      json
 // @Success      200  {string}  string
 // @Failure      400  {object}  errs.Error
 // @Failure      404  {object}  errs.Error
 // @Failure      500  {object}  errs.Error
-// @Router       /echo [put]
-func (h *EchoHandler) Save(w http.ResponseWriter, r *http.Request) {
+// @Router       /pets [put]
+func (h *PetsHTTPHandler) Save(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("put"))
 }
 
 // Create godoc
 // @Summary      Create handler
-// @Description  Simple echo post
-// @Tags         echo
+// @Description  Simple pets post
+// @Tags         pets
 // @Accept       json
 // @Produce      json
 // @Success      200  {string}  string
 // @Failure      400  {object}  errs.Error
 // @Failure      404  {object}  errs.Error
 // @Failure      500  {object}  errs.Error
-// @Router       /echo [post]
-func (h *EchoHandler) Create(w http.ResponseWriter, r *http.Request) {
+// @Router       /pets [post]
+func (h *PetsHTTPHandler) Create(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("post"))
 }
 
 // Update godoc
 // @Summary      Update handler
-// @Description  Simple echo patch
-// @Tags         echo
+// @Description  Simple pets patch
+// @Tags         pets
 // @Accept       json
 // @Produce      json
 // @Success      200  {string}  string
 // @Failure      400  {object}  errs.Error
 // @Failure      404  {object}  errs.Error
 // @Failure      500  {object}  errs.Error
-// @Router       /echo [patch]
-func (h *EchoHandler) Update(w http.ResponseWriter, r *http.Request) {
+// @Router       /pets [patch]
+func (h *PetsHTTPHandler) Update(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("patch"))
 }

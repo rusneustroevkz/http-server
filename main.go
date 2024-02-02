@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
-
-	echoHandlers "github.com/rusneustroevkz/http-server/internal/echo/handlers"
+	"github.com/rusneustroevkz/http-server/internal/config"
+	petsHTTPHandlers "github.com/rusneustroevkz/http-server/internal/pets/handlers/http"
 	"github.com/rusneustroevkz/http-server/pkg/logger"
-	serverHTTP "github.com/rusneustroevkz/http-server/pkg/server/http"
+	grpcServer "github.com/rusneustroevkz/http-server/pkg/server/grpc"
+	httpServer "github.com/rusneustroevkz/http-server/pkg/server/http"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
 )
@@ -29,16 +30,33 @@ func main() {
 			return &fxevent.ZapLogger{Logger: log.Logger()}
 		}),
 		fx.Provide(
-			serverHTTP.NewHTTPServer,
+			config.NewConfig,
+			httpServer.NewHTTPServer,
+			httpServer.AsRoute(petsHTTPHandlers.NewPetsHTTPHandler),
 			fx.Annotate(
-				serverHTTP.NewServeMux,
+				httpServer.MountRoutes,
 				fx.ParamTags(`group:"routes"`),
 			),
-			serverHTTP.AsRoute(echoHandlers.NewEchoHandler),
+			grpcServer.NewGRPCServer,
+			//grpcServer.AsRoute(petsGRPCHandlers.NewPetsGRPCHandler),
+			//fx.Annotate(
+			//	grpcServer.MountRoutes,
+			//	fx.ParamTags(`group:"routes"`),
+			//),
 			logger.NewLogger,
 		),
 		fx.Invoke(
-			func(lc fx.Lifecycle, srv *serverHTTP.Server) {
+			func(lc fx.Lifecycle, srv *httpServer.Server) {
+				lc.Append(fx.Hook{
+					OnStart: func(ctx context.Context) error {
+						return srv.Start(ctx)
+					},
+					OnStop: func(ctx context.Context) error {
+						return srv.Stop(ctx)
+					},
+				})
+			},
+			func(lc fx.Lifecycle, srv *grpcServer.Server) {
 				lc.Append(fx.Hook{
 					OnStart: func(ctx context.Context) error {
 						return srv.Start(ctx)
