@@ -1,13 +1,13 @@
 package main
 
 import (
-	echoHandlers "asd/internal/echo/handlers"
-	"asd/internal/server/http"
 	"context"
 
+	echoHandlers "github.com/rusneustroevkz/http-server/internal/echo/handlers"
+	"github.com/rusneustroevkz/http-server/pkg/logger"
+	serverHTTP "github.com/rusneustroevkz/http-server/pkg/server/http"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
-	"go.uber.org/zap"
 )
 
 // @title Swagger Example API
@@ -25,20 +25,20 @@ import (
 // @host localhost:8080
 func main() {
 	fx.New(
-		fx.WithLogger(func(log *zap.Logger) fxevent.Logger {
-			return &fxevent.ZapLogger{Logger: log}
+		fx.WithLogger(func(log logger.Logger) fxevent.Logger {
+			return &fxevent.ZapLogger{Logger: log.Logger()}
 		}),
 		fx.Provide(
-			http.NewHTTPServer,
+			serverHTTP.NewHTTPServer,
 			fx.Annotate(
-				http.NewServeMux,
+				serverHTTP.NewServeMux,
 				fx.ParamTags(`group:"routes"`),
 			),
-			http.AsRoute(echoHandlers.NewEchoHandler),
-			zap.NewExample,
+			serverHTTP.AsRoute(echoHandlers.NewEchoHandler),
+			logger.NewLogger,
 		),
 		fx.Invoke(
-			func(lc fx.Lifecycle, srv *http.Server) {
+			func(lc fx.Lifecycle, srv *serverHTTP.Server) {
 				lc.Append(fx.Hook{
 					OnStart: func(ctx context.Context) error {
 						return srv.Start(ctx)

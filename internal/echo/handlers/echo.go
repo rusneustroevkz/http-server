@@ -1,17 +1,17 @@
 package handlers
 
 import (
-	_ "asd/internal/errs"
 	"github.com/go-chi/chi/v5"
-	"go.uber.org/zap"
+	_ "github.com/rusneustroevkz/http-server/internal/errs"
+	"github.com/rusneustroevkz/http-server/pkg/logger"
 	"net/http"
 )
 
 type EchoHandler struct {
-	log *zap.Logger
+	log logger.Logger
 }
 
-func NewEchoHandler(log *zap.Logger) *EchoHandler {
+func NewEchoHandler(log logger.Logger) *EchoHandler {
 	return &EchoHandler{log: log}
 }
 

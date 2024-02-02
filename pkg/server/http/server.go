@@ -3,17 +3,17 @@ package http
 import (
 	"context"
 	"github.com/go-chi/chi/v5"
-	"go.uber.org/zap"
+	"github.com/rusneustroevkz/http-server/pkg/logger"
 	"net"
 	"net/http"
 )
 
 type Server struct {
-	log *zap.Logger
+	log logger.Logger
 	srv *http.Server
 }
 
-func NewHTTPServer(mux *chi.Mux, log *zap.Logger) *Server {
+func NewHTTPServer(mux *chi.Mux, log logger.Logger) *Server {
 	srv := &http.Server{Addr: ":8080", Handler: mux}
 
 	return &Server{
@@ -27,10 +27,10 @@ func (s *Server) Start(_ context.Context) error {
 	if err != nil {
 		return err
 	}
-	s.log.Info("Starting HTTP server", zap.String("addr", s.srv.Addr))
+	s.log.Info("Starting HTTP server", logger.String("addr", s.srv.Addr))
 	go func() {
 		err := s.srv.Serve(listener)
-		s.log.Fatal("cannot start server", zap.Error(err))
+		s.log.Fatal("cannot start server", logger.Error(err))
 	}()
 	return nil
 }
