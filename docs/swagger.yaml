@@ -1,0 +1,185 @@
+definitions:
+  errs.Error:
+    properties:
+      code:
+        type: integer
+      details:
+        additionalProperties:
+          type: string
+        type: object
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server Petstore server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /echo:
+    delete:
+      consumes:
+      - application/json
+      description: Simple echo list
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errs.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.Error'
+      summary: Delete handler
+      tags:
+      - echo
+    get:
+      consumes:
+      - application/json
+      description: Simple echo list
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errs.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.Error'
+      summary: List handler
+      tags:
+      - echo
+    patch:
+      consumes:
+      - application/json
+      description: Simple echo patch
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errs.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.Error'
+      summary: Update handler
+      tags:
+      - echo
+    post:
+      consumes:
+      - application/json
+      description: Simple echo post
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errs.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.Error'
+      summary: Create handler
+      tags:
+      - echo
+    put:
+      consumes:
+      - application/json
+      description: Simple echo put
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errs.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.Error'
+      summary: Save handler
+      tags:
+      - echo
+  /echo/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Simple echo get
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errs.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.Error'
+      summary: Get handler
+      tags:
+      - echo
+swagger: "2.0"
