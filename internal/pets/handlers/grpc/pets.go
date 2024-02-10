@@ -1,25 +1,39 @@
 package grpc
 
 import (
+	"context"
+
 	petspb "github.com/rusneustroevkz/http-server/internal/pets/handlers/grpc/pb"
 	"github.com/rusneustroevkz/http-server/pkg/logger"
-	grpcServer "google.golang.org/grpc"
+	"google.golang.org/grpc"
 )
 
-type PetsGRPCHandler struct {
+type PetsGRPCServer struct {
 	log logger.Logger
+	petspb.UnimplementedPetsServer
 }
 
-func NewPetsGRPCHandler(log logger.Logger) *PetsGRPCHandler {
-	return &PetsGRPCHandler{
-		log: log,
+func NewPetsGRPCServer(log logger.Logger) *PetsGRPCServer {
+	petsServer := PetsGRPCServer{
+		log:                     log,
+		UnimplementedPetsServer: petspb.UnimplementedPetsServer{},
 	}
+
+	return &petsServer
 }
 
-func (h *PetsGRPCHandler) ServiceDesc() *grpcServer.ServiceDesc {
+func (h *PetsGRPCServer) Desc() *grpc.ServiceDesc {
 	return &petspb.Pets_ServiceDesc
 }
 
-func (h *PetsGRPCHandler) SS() any {
-	return ""
+func (h *PetsGRPCServer) Service() any {
+	return h
+}
+
+func (h *PetsGRPCServer) SayHello(ctx context.Context, request *petspb.HelloRequest) (*petspb.HelloReply, error) {
+	msg := &petspb.HelloReply{
+		Message: "ok",
+	}
+
+	return msg, nil
 }

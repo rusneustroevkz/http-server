@@ -11,18 +11,35 @@ import (
 )
 
 type Server struct {
-	log    logger.Logger
-	cfg    *config.Config
-	server *grpc.Server
+	log      logger.Logger
+	cfg      *config.Config
+	server   *grpc.Server
+	services []service
 }
 
-func NewGRPCServer(cfg *config.Config, log logger.Logger) *Server {
+type service interface {
+	Desc() *grpc.ServiceDesc
+	Service() any
+}
+
+func NewGRPCServer(cfg *config.Config, log logger.Logger, services ...service) *Server {
 	server := grpc.NewServer()
 
 	return &Server{
-		cfg:    cfg,
-		log:    log,
-		server: server,
+		cfg:      cfg,
+		log:      log,
+		server:   server,
+		services: services,
+	}
+}
+
+func (s *Server) Server() *grpc.Server {
+	return s.server
+}
+
+func (s *Server) MountServices() {
+	for _, ss := range s.services {
+		s.server.RegisterService(ss.Desc(), ss.Service())
 	}
 }
 
