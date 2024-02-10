@@ -8,7 +8,7 @@ import (
 	petsGRPCHandlers "github.com/rusneustroevkz/http-server/internal/pets/handlers/grpc"
 	petsHTTPHandlers "github.com/rusneustroevkz/http-server/internal/pets/handlers/http"
 	grpcServer "github.com/rusneustroevkz/http-server/internal/server/grpc"
-	"github.com/rusneustroevkz/http-server/internal/server/http"
+	httpServer "github.com/rusneustroevkz/http-server/internal/server/http"
 	"github.com/rusneustroevkz/http-server/pkg/logger"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
@@ -35,10 +35,10 @@ func main() {
 		fx.Provide(
 			config.NewConfig,
 			logger.NewLogger,
-			http.NewHTTPServer,
+			httpServer.NewHTTPServer,
 			petsHTTPHandlers.NewPetsHTTPHandler,
 			func(petsHTTPHandler *petsHTTPHandlers.PetsHTTPHandler) *chi.Mux {
-				return http.MountRoutes(petsHTTPHandler)
+				return httpServer.MountRoutes(petsHTTPHandler)
 			},
 			petsGRPCHandlers.NewPetsGRPCServer,
 			func(
@@ -54,7 +54,7 @@ func main() {
 			},
 		),
 		fx.Invoke(
-			func(lc fx.Lifecycle, srv *http.Server) {
+			func(lc fx.Lifecycle, srv *httpServer.Server) {
 				lc.Append(fx.Hook{
 					OnStart: func(ctx context.Context) error {
 						return srv.Start(ctx)
