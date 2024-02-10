@@ -7,16 +7,16 @@ import (
 	"github.com/rusneustroevkz/http-server/internal/config"
 	petsGRPCHandlers "github.com/rusneustroevkz/http-server/internal/pets/handlers/grpc"
 	petsHTTPHandlers "github.com/rusneustroevkz/http-server/internal/pets/handlers/http"
+	grpcServer "github.com/rusneustroevkz/http-server/internal/server/grpc"
+	"github.com/rusneustroevkz/http-server/internal/server/http"
 	"github.com/rusneustroevkz/http-server/pkg/logger"
-	grpcServer "github.com/rusneustroevkz/http-server/pkg/server/grpc"
-	httpServer "github.com/rusneustroevkz/http-server/pkg/server/http"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
 )
 
 // @title Swagger Example API
 // @version 1.0
-// @description This is a sample server Petstore server.
+// @description This is a sample server PetStore server.
 // @termsOfService http://swagger.io/terms/
 
 // @contact.name API Support
@@ -35,10 +35,10 @@ func main() {
 		fx.Provide(
 			config.NewConfig,
 			logger.NewLogger,
-			httpServer.NewHTTPServer,
+			http.NewHTTPServer,
 			petsHTTPHandlers.NewPetsHTTPHandler,
 			func(petsHTTPHandler *petsHTTPHandlers.PetsHTTPHandler) *chi.Mux {
-				return httpServer.MountRoutes(petsHTTPHandler)
+				return http.MountRoutes(petsHTTPHandler)
 			},
 			petsGRPCHandlers.NewPetsGRPCServer,
 			func(
@@ -54,7 +54,7 @@ func main() {
 			},
 		),
 		fx.Invoke(
-			func(lc fx.Lifecycle, srv *httpServer.Server) {
+			func(lc fx.Lifecycle, srv *http.Server) {
 				lc.Append(fx.Hook{
 					OnStart: func(ctx context.Context) error {
 						return srv.Start(ctx)
