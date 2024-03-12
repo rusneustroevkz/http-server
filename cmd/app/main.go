@@ -40,12 +40,10 @@ func main() {
 			logger.NewLogger,
 			httpServer.NewHTTPServer,
 			productsRest.NewProductsRest,
-			func(productRest *productsRest.ProductsRest) *chi.Mux {
-				return httpServer.Routes(productRest)
+			func(productRest *productsRest.ProductsRest, graphRoutes *httpServer.Graphql) *chi.Mux {
+				return httpServer.Routes(productRest, graphRoutes)
 			},
-			func() (*httpServer.Graphql, error) {
-				return httpServer.NewGraphql()
-			},
+			httpServer.NewGraphql,
 			productGRPCHandlers.NewProductsGRPCServer,
 			categoriesGRPCHandlers.NewCategoriesGRPCServer,
 			productsGraph.NewProductsGraph,
