@@ -17,8 +17,19 @@ type Server struct {
 	srv *http.Server
 }
 
-func NewHTTPServer(cfg *config.Config, mux *chi.Mux, log logger.Logger) *Server {
-	srv := &http.Server{Addr: fmt.Sprintf(":%d", cfg.HTTPServer.Port), Handler: mux}
+func NewHTTPServer(
+	cfg *config.Config,
+	restRoutes *chi.Mux,
+	log logger.Logger,
+	graphql *Graphql,
+) *Server {
+	restRoutes.Mount("/graph", graphql.Handler())
+
+	if cfg.HTTPServer.Test {
+		restRoutes.Mount("/graph-playground", graphql.Playground())
+	}
+
+	srv := &http.Server{Addr: fmt.Sprintf(":%d", cfg.HTTPServer.Port), Handler: restRoutes}
 
 	return &Server{
 		log: log,

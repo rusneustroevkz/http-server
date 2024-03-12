@@ -2,14 +2,17 @@ package main
 
 import (
 	"context"
-	"github.com/go-chi/chi/v5"
+
 	categoriesGRPCHandlers "github.com/rusneustroevkz/http-server/internal/categories/handlers/grpc"
 	"github.com/rusneustroevkz/http-server/internal/config"
+	productsGraph "github.com/rusneustroevkz/http-server/internal/product/handlers/graph"
 	productGRPCHandlers "github.com/rusneustroevkz/http-server/internal/product/handlers/grpc"
-	productHTTPHandlers "github.com/rusneustroevkz/http-server/internal/product/handlers/http"
+	productsRest "github.com/rusneustroevkz/http-server/internal/product/handlers/rest"
 	grpcServer "github.com/rusneustroevkz/http-server/internal/server/grpc"
 	httpServer "github.com/rusneustroevkz/http-server/internal/server/http"
 	"github.com/rusneustroevkz/http-server/pkg/logger"
+
+	"github.com/go-chi/chi/v5"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
 )
@@ -36,12 +39,16 @@ func main() {
 			config.NewConfig,
 			logger.NewLogger,
 			httpServer.NewHTTPServer,
-			productHTTPHandlers.NewProductsHTTPHandler,
-			func(productHTTPHandler *productHTTPHandlers.ProductHTTPHandler) *chi.Mux {
-				return httpServer.MountRoutes(productHTTPHandler)
+			productsRest.NewProductsRest,
+			func(productRest *productsRest.ProductsRest) *chi.Mux {
+				return httpServer.Routes(productRest)
+			},
+			func() (*httpServer.Graphql, error) {
+				return httpServer.NewGraphql()
 			},
 			productGRPCHandlers.NewProductsGRPCServer,
 			categoriesGRPCHandlers.NewCategoriesGRPCServer,
+			productsGraph.NewProductsGraph,
 			func(
 				cfg *config.Config,
 				log logger.Logger,

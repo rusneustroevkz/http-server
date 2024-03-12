@@ -1,25 +1,31 @@
 package http
 
 import (
-	"github.com/go-chi/chi/v5"
+	"net/http"
+
 	_ "github.com/rusneustroevkz/http-server/internal/errs"
 	"github.com/rusneustroevkz/http-server/pkg/logger"
-	"net/http"
+
+	"github.com/go-chi/chi/v5"
 )
 
-type ProductHTTPHandler struct {
+type ProductsRest struct {
 	log logger.Logger
 }
 
-func NewProductsHTTPHandler(log logger.Logger) *ProductHTTPHandler {
-	return &ProductHTTPHandler{log: log}
+func NewProductsRest(log logger.Logger) *ProductsRest {
+	return &ProductsRest{log: log}
 }
 
-func (*ProductHTTPHandler) Pattern() string {
+func (*ProductsRest) Pattern() string {
 	return "/products"
 }
 
-func (h *ProductHTTPHandler) Routes() *chi.Mux {
+func (*ProductsRest) PlaygroundPattern() string {
+	return ""
+}
+
+func (h *ProductsRest) Routes() *chi.Mux {
 	r := chi.NewRouter()
 
 	r.Route("/", func(r chi.Router) {
@@ -45,7 +51,7 @@ func (h *ProductHTTPHandler) Routes() *chi.Mux {
 // @Failure      404  {object}  errs.Error
 // @Failure      500  {object}  errs.Error
 // @Router       /products/{id} [get]
-func (h *ProductHTTPHandler) Get(w http.ResponseWriter, r *http.Request) {
+func (h *ProductsRest) Get(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("get"))
 }
 
@@ -60,7 +66,7 @@ func (h *ProductHTTPHandler) Get(w http.ResponseWriter, r *http.Request) {
 // @Failure      404  {object}  errs.Error
 // @Failure      500  {object}  errs.Error
 // @Router       /products [get]
-func (h *ProductHTTPHandler) List(w http.ResponseWriter, r *http.Request) {
+func (h *ProductsRest) List(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("list"))
 }
 
@@ -75,7 +81,7 @@ func (h *ProductHTTPHandler) List(w http.ResponseWriter, r *http.Request) {
 // @Failure      404  {object}  errs.Error
 // @Failure      500  {object}  errs.Error
 // @Router       /products [delete]
-func (h *ProductHTTPHandler) Delete(w http.ResponseWriter, r *http.Request) {
+func (h *ProductsRest) Delete(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("delete"))
 }
 
@@ -90,7 +96,7 @@ func (h *ProductHTTPHandler) Delete(w http.ResponseWriter, r *http.Request) {
 // @Failure      404  {object}  errs.Error
 // @Failure      500  {object}  errs.Error
 // @Router       /products [put]
-func (h *ProductHTTPHandler) Save(w http.ResponseWriter, r *http.Request) {
+func (h *ProductsRest) Save(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("put"))
 }
 
@@ -105,7 +111,7 @@ func (h *ProductHTTPHandler) Save(w http.ResponseWriter, r *http.Request) {
 // @Failure      404  {object}  errs.Error
 // @Failure      500  {object}  errs.Error
 // @Router       /products [post]
-func (h *ProductHTTPHandler) Create(w http.ResponseWriter, r *http.Request) {
+func (h *ProductsRest) Create(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("post"))
 }
 
@@ -120,6 +126,6 @@ func (h *ProductHTTPHandler) Create(w http.ResponseWriter, r *http.Request) {
 // @Failure      404  {object}  errs.Error
 // @Failure      500  {object}  errs.Error
 // @Router       /products [patch]
-func (h *ProductHTTPHandler) Update(w http.ResponseWriter, r *http.Request) {
+func (h *ProductsRest) Update(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("patch"))
 }

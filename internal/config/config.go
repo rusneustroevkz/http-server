@@ -7,6 +7,7 @@ type Config struct {
 
 type Server struct {
 	Port int64
+	Test bool
 }
 
 func NewConfig() *Config {
@@ -16,6 +17,7 @@ func NewConfig() *Config {
 		},
 		HTTPServer: Server{
 			Port: 8080,
+			Test: true,
 		},
 	}
 }

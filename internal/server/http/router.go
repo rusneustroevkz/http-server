@@ -6,7 +6,7 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
-func MountRoutes(routes ...Route) *chi.Mux {
+func Routes(routes ...Route) *chi.Mux {
 	mux := chi.NewMux()
 
 	for _, route := range routes {
