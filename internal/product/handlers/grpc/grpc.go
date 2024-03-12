@@ -30,9 +30,9 @@ func (h *ProductsGRPCServer) Service() any {
 	return h
 }
 
-func (h *ProductsGRPCServer) SayHello(ctx context.Context, request *productspb.ProductRequest) (*productspb.ProductResponse, error) {
+func (h *ProductsGRPCServer) Product(ctx context.Context, request *productspb.ProductRequest) (*productspb.ProductResponse, error) {
 	msg := &productspb.ProductResponse{
-		Message: "ok",
+		Message: "asd",
 	}
 
 	return msg, nil
