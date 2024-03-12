@@ -1,7 +1,8 @@
 package http
 
 import (
-	"github.com/rusneustroevkz/http-server/graph"
+	"github.com/rusneustroevkz/http-server/graph/generated"
+	"github.com/rusneustroevkz/http-server/graph/resolvers"
 	"github.com/rusneustroevkz/http-server/internal/config"
 
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -28,7 +29,9 @@ func (g *Graphql) Routes() *chi.Mux {
 		router.Get("/", playground.Handler("GraphQL playground", "/query"))
 	}
 
-	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
+	schemaConfig := generated.Config{Resolvers: &resolvers.Resolver{}}
+	schema := generated.NewExecutableSchema(schemaConfig)
+	srv := handler.NewDefaultServer(schema)
 	router.Get("/query", srv.ServeHTTP)
 
 	return router
