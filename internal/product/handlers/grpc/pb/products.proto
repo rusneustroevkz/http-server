@@ -1,21 +1,21 @@
 syntax = "proto3";
 
-option go_package = "./;petspb";
+option go_package = "./;productspb";
 
-package petspb;
+package productspb;
 
 // The greeting service definition.
-service Pets {
+service Products {
   // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloReply) {}
+  rpc Product (ProductRequest) returns (ProductResponse) {}
 }
 
 // The request message containing the user's name.
-message HelloRequest {
+message ProductRequest {
   string name = 1;
 }
 
 // The response message containing the greetings
-message HelloReply {
+message ProductResponse {
   string message = 1;
 }

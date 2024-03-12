@@ -5,8 +5,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/rusneustroevkz/http-server/internal/config"
-	petsGRPCHandlers "github.com/rusneustroevkz/http-server/internal/pets/handlers/grpc"
-	petsHTTPHandlers "github.com/rusneustroevkz/http-server/internal/pets/handlers/http"
+	productGRPCHandlers "github.com/rusneustroevkz/http-server/internal/product/handlers/grpc"
+	productHTTPHandlers "github.com/rusneustroevkz/http-server/internal/product/handlers/http"
 	grpcServer "github.com/rusneustroevkz/http-server/internal/server/grpc"
 	httpServer "github.com/rusneustroevkz/http-server/internal/server/http"
 	"github.com/rusneustroevkz/http-server/pkg/logger"
@@ -16,7 +16,7 @@ import (
 
 // @title Swagger Example API
 // @version 1.0
-// @description This is a sample server PetStore server.
+// @description This is a sample server Store server.
 // @termsOfService http://swagger.io/terms/
 
 // @contact.name API Support
@@ -36,20 +36,20 @@ func main() {
 			config.NewConfig,
 			logger.NewLogger,
 			httpServer.NewHTTPServer,
-			petsHTTPHandlers.NewPetsHTTPHandler,
-			func(petsHTTPHandler *petsHTTPHandlers.PetsHTTPHandler) *chi.Mux {
-				return httpServer.MountRoutes(petsHTTPHandler)
+			productHTTPHandlers.NewProductsHTTPHandler,
+			func(productHTTPHandler *productHTTPHandlers.ProductHTTPHandler) *chi.Mux {
+				return httpServer.MountRoutes(productHTTPHandler)
 			},
-			petsGRPCHandlers.NewPetsGRPCServer,
+			productGRPCHandlers.NewProductsGRPCServer,
 			func(
 				cfg *config.Config,
 				log logger.Logger,
-				petsGRPCServer *petsGRPCHandlers.PetsGRPCServer,
+				productsGRPCServer *productGRPCHandlers.ProductsGRPCServer,
 			) *grpcServer.Server {
 				return grpcServer.NewGRPCServer(
 					cfg,
 					log,
-					petsGRPCServer,
+					productsGRPCServer,
 				)
 			},
 		),

@@ -7,19 +7,19 @@ import (
 	"net/http"
 )
 
-type PetsHTTPHandler struct {
+type ProductHTTPHandler struct {
 	log logger.Logger
 }
 
-func NewPetsHTTPHandler(log logger.Logger) *PetsHTTPHandler {
-	return &PetsHTTPHandler{log: log}
+func NewProductsHTTPHandler(log logger.Logger) *ProductHTTPHandler {
+	return &ProductHTTPHandler{log: log}
 }
 
-func (*PetsHTTPHandler) Pattern() string {
-	return "/pets"
+func (*ProductHTTPHandler) Pattern() string {
+	return "/products"
 }
 
-func (h *PetsHTTPHandler) Routes() *chi.Mux {
+func (h *ProductHTTPHandler) Routes() *chi.Mux {
 	r := chi.NewRouter()
 
 	r.Route("/", func(r chi.Router) {
@@ -36,90 +36,90 @@ func (h *PetsHTTPHandler) Routes() *chi.Mux {
 
 // Get godoc
 // @Summary      Get handler
-// @Description  Simple pets get
-// @Tags         pets
+// @Description  Simple products get
+// @Tags         products
 // @Accept       json
 // @Produce      json
 // @Success      200  {string}  string
 // @Failure      400  {object}  errs.Error
 // @Failure      404  {object}  errs.Error
 // @Failure      500  {object}  errs.Error
-// @Router       /pets/{id} [get]
-func (h *PetsHTTPHandler) Get(w http.ResponseWriter, r *http.Request) {
+// @Router       /products/{id} [get]
+func (h *ProductHTTPHandler) Get(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("get"))
 }
 
 // List godoc
 // @Summary      List handler
-// @Description  Simple pets list
-// @Tags         pets
+// @Description  Simple products list
+// @Tags         products
 // @Accept       json
 // @Produce      json
 // @Success      200  {string}  string
 // @Failure      400  {object}  errs.Error
 // @Failure      404  {object}  errs.Error
 // @Failure      500  {object}  errs.Error
-// @Router       /pets [get]
-func (h *PetsHTTPHandler) List(w http.ResponseWriter, r *http.Request) {
+// @Router       /products [get]
+func (h *ProductHTTPHandler) List(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("list"))
 }
 
 // Delete godoc
 // @Summary      Delete handler
-// @Description  Simple pets list
-// @Tags         pets
+// @Description  Simple products list
+// @Tags         products
 // @Accept       json
 // @Produce      json
 // @Success      200  {string}  string
 // @Failure      400  {object}  errs.Error
 // @Failure      404  {object}  errs.Error
 // @Failure      500  {object}  errs.Error
-// @Router       /pets [delete]
-func (h *PetsHTTPHandler) Delete(w http.ResponseWriter, r *http.Request) {
+// @Router       /products [delete]
+func (h *ProductHTTPHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("delete"))
 }
 
 // Save godoc
 // @Summary      Save handler
-// @Description  Simple pets put
-// @Tags         pets
+// @Description  Simple products put
+// @Tags         products
 // @Accept       json
 // @Produce      json
 // @Success      200  {string}  string
 // @Failure      400  {object}  errs.Error
 // @Failure      404  {object}  errs.Error
 // @Failure      500  {object}  errs.Error
-// @Router       /pets [put]
-func (h *PetsHTTPHandler) Save(w http.ResponseWriter, r *http.Request) {
+// @Router       /products [put]
+func (h *ProductHTTPHandler) Save(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("put"))
 }
 
 // Create godoc
 // @Summary      Create handler
-// @Description  Simple pets post
-// @Tags         pets
+// @Description  Simple products post
+// @Tags         products
 // @Accept       json
 // @Produce      json
 // @Success      200  {string}  string
 // @Failure      400  {object}  errs.Error
 // @Failure      404  {object}  errs.Error
 // @Failure      500  {object}  errs.Error
-// @Router       /pets [post]
-func (h *PetsHTTPHandler) Create(w http.ResponseWriter, r *http.Request) {
+// @Router       /products [post]
+func (h *ProductHTTPHandler) Create(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("post"))
 }
 
 // Update godoc
 // @Summary      Update handler
-// @Description  Simple pets patch
-// @Tags         pets
+// @Description  Simple products patch
+// @Tags         products
 // @Accept       json
 // @Produce      json
 // @Success      200  {string}  string
 // @Failure      400  {object}  errs.Error
 // @Failure      404  {object}  errs.Error
 // @Failure      500  {object}  errs.Error
-// @Router       /pets [patch]
-func (h *PetsHTTPHandler) Update(w http.ResponseWriter, r *http.Request) {
+// @Router       /products [patch]
+func (h *ProductHTTPHandler) Update(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("patch"))
 }
