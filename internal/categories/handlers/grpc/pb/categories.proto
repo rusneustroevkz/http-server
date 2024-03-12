@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option go_package = "./;categoriesspb";
+
+package categoriesspb;
+
+// The greeting service definition.
+service Categories {
+  // Sends a greeting
+  rpc Category (CategoryRequest) returns (CategoryResponse) {}
+}
+
+// The request message containing the user's name.
+message CategoryRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message CategoryResponse {
+  string message = 1;
+}

@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-
 	"github.com/go-chi/chi/v5"
+	categoriesGRPCHandlers "github.com/rusneustroevkz/http-server/internal/categories/handlers/grpc"
 	"github.com/rusneustroevkz/http-server/internal/config"
 	productGRPCHandlers "github.com/rusneustroevkz/http-server/internal/product/handlers/grpc"
 	productHTTPHandlers "github.com/rusneustroevkz/http-server/internal/product/handlers/http"
@@ -41,15 +41,18 @@ func main() {
 				return httpServer.MountRoutes(productHTTPHandler)
 			},
 			productGRPCHandlers.NewProductsGRPCServer,
+			categoriesGRPCHandlers.NewCategoriesGRPCServer,
 			func(
 				cfg *config.Config,
 				log logger.Logger,
 				productsGRPCServer *productGRPCHandlers.ProductsGRPCServer,
+				categoriesGRPCServer *categoriesGRPCHandlers.CategoriesGRPCServer,
 			) *grpcServer.Server {
 				return grpcServer.NewGRPCServer(
 					cfg,
 					log,
 					productsGRPCServer,
+					categoriesGRPCServer,
 				)
 			},
 		),
