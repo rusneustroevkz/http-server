@@ -1,15 +1,15 @@
 package http
 
 import (
-	"github.com/99designs/gqlgen/graphql/handler"
-	"github.com/99designs/gqlgen/graphql/handler/extension"
-	"github.com/99designs/gqlgen/graphql/handler/transport"
-	"github.com/99designs/gqlgen/graphql/playground"
 	_ "github.com/rusneustroevkz/http-server/docs"
 	"github.com/rusneustroevkz/http-server/internal/config"
 	"github.com/rusneustroevkz/http-server/internal/graph/generated"
 	"github.com/rusneustroevkz/http-server/internal/graph/resolvers"
 
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/handler/extension"
+	"github.com/99designs/gqlgen/graphql/handler/transport"
+	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/go-chi/chi/v5"
 	httpSwagger "github.com/swaggo/http-swagger"
 )
@@ -21,9 +21,8 @@ func Routes(cfg *config.Config, resolver *resolvers.Resolver, routes ...Route) *
 		router.Mount(route.Pattern(), route.Routes())
 	}
 
-	router.Get("/swagger/*", httpSwagger.Handler(httpSwagger.URL("doc.json")))
-
-	if cfg.HTTPServer.Test {
+	if !cfg.App.Production {
+		router.Get("/swagger/*", httpSwagger.Handler(httpSwagger.URL("doc.json")))
 		router.Handle("/graph/playground", playground.Handler("GraphQL playground", "/graph/query"))
 	}
 

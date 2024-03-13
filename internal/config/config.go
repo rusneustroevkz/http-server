@@ -11,11 +11,15 @@ type Config struct {
 	GRPCServer Server `yaml:"grpc-server"`
 	HTTPServer Server `yaml:"http-server"`
 	Kafka      Kafka  `yaml:"kafka"`
+	App        App    `yaml:"app"`
+}
+
+type App struct {
+	Production bool `yaml:"production"`
 }
 
 type Server struct {
 	Port int64 `yaml:"port"`
-	Test bool  `yaml:"test"`
 }
 
 type Kafka struct {

@@ -1,11 +1,11 @@
+app:
+  production: false
 grpc-server:
   port: 9090
-  test: false
 http-server:
   port: 8080
-  test: true
 kafka:
-  verbose: true
+  verbose: false
   client-name: backend-example
   brokers:
     - localhost:9094
