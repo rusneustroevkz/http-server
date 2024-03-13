@@ -1,13 +1,13 @@
 package http
 
 import (
-	"github.com/99designs/gqlgen/graphql/handler/extension"
-	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/rusneustroevkz/http-server/internal/config"
 	"github.com/rusneustroevkz/http-server/internal/graph/generated"
 	"github.com/rusneustroevkz/http-server/internal/graph/resolvers"
 
 	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/handler/extension"
+	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/go-chi/chi/v5"
 )

@@ -41,14 +41,14 @@ func main() {
 			logger.NewLogger,
 			httpServer.NewHTTPServer,
 			productsRest.NewProductsRest,
-			func(productRest *productsRest.ProductsRest, graphRoutes *httpServer.Graphql) *chi.Mux {
-				return httpServer.Routes(productRest, graphRoutes)
-			},
 			httpServer.NewGraphql,
 			productGRPCHandlers.NewProductsGRPCServer,
 			categoriesGRPCHandlers.NewCategoriesGRPCServer,
 			resolvers.NewResolver,
 			productGraph.NewProductGraph,
+			func(productRest *productsRest.ProductsRest, graphRoutes *httpServer.Graphql) *chi.Mux {
+				return httpServer.Routes(productRest, graphRoutes)
+			},
 			func(
 				cfg *config.Config,
 				log logger.Logger,
