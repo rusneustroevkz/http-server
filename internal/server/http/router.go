@@ -8,15 +8,15 @@ import (
 )
 
 func Routes(routes ...Route) *chi.Mux {
-	mux := chi.NewMux()
+	router := chi.NewRouter()
 
 	for _, route := range routes {
-		mux.Mount(route.Pattern(), route.Routes())
+		router.Mount(route.Pattern(), route.Routes())
 	}
 
-	mux.Get("/swagger/*", httpSwagger.Handler(httpSwagger.URL("doc.json")))
+	router.Get("/swagger/*", httpSwagger.Handler(httpSwagger.URL("doc.json")))
 
-	return mux
+	return router
 }
 
 type Route interface {

@@ -9,7 +9,7 @@ import (
 	"sync/atomic"
 
 	"github.com/99designs/gqlgen/graphql"
-	models_graph "github.com/rusneustroevkz/http-server/graph/models"
+	models_graph "github.com/rusneustroevkz/http-server/internal/graph/models"
 	"github.com/vektah/gqlparser/v2/ast"
 )
 
@@ -147,7 +147,7 @@ func (ec *executionContext) _ProductResponse(ctx context.Context, sel ast.Select
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalOProductResponse2ᚖgithubᚗcomᚋrusneustroevkzᚋhttpᚑserverᚋgraphᚋmodelsᚐProductResponse(ctx context.Context, sel ast.SelectionSet, v *models_graph.ProductResponse) graphql.Marshaler {
+func (ec *executionContext) marshalOProductResponse2ᚖgithubᚗcomᚋrusneustroevkzᚋhttpᚑserverᚋinternalᚋgraphᚋmodelsᚐProductResponse(ctx context.Context, sel ast.SelectionSet, v *models_graph.ProductResponse) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

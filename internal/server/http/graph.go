@@ -1,9 +1,11 @@
 package http
 
 import (
-	"github.com/rusneustroevkz/http-server/graph/generated"
-	"github.com/rusneustroevkz/http-server/graph/resolvers"
+	"github.com/99designs/gqlgen/graphql/handler/extension"
+	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/rusneustroevkz/http-server/internal/config"
+	"github.com/rusneustroevkz/http-server/internal/graph/generated"
+	"github.com/rusneustroevkz/http-server/internal/graph/resolvers"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -11,28 +13,31 @@ import (
 )
 
 type Graphql struct {
-	cfg *config.Config
+	cfg      *config.Config
+	resolver *resolvers.Resolver
 }
 
-func NewGraphql(cfg *config.Config) *Graphql {
-	return &Graphql{cfg: cfg}
+func NewGraphql(cfg *config.Config, resolver *resolvers.Resolver) *Graphql {
+	return &Graphql{cfg: cfg, resolver: resolver}
 }
 
 func (*Graphql) Pattern() string {
-	return "/query"
+	return "/"
 }
 
 func (g *Graphql) Routes() *chi.Mux {
 	router := chi.NewRouter()
 
 	if g.cfg.HTTPServer.Test {
-		router.Get("/", playground.Handler("GraphQL playground", "/query"))
+		router.Handle("/graph/playground", playground.Handler("GraphQL playground", "/graph/query"))
 	}
 
-	schemaConfig := generated.Config{Resolvers: &resolvers.Resolver{}}
+	schemaConfig := generated.Config{Resolvers: g.resolver}
 	schema := generated.NewExecutableSchema(schemaConfig)
-	srv := handler.NewDefaultServer(schema)
-	router.Get("/query", srv.ServeHTTP)
+	srv := handler.New(schema)
+	srv.AddTransport(transport.POST{})
+	srv.Use(extension.Introspection{})
+	router.Handle("/graph/query", srv)
 
 	return router
 }

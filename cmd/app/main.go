@@ -5,7 +5,8 @@ import (
 
 	categoriesGRPCHandlers "github.com/rusneustroevkz/http-server/internal/categories/handlers/grpc"
 	"github.com/rusneustroevkz/http-server/internal/config"
-	productsGraph "github.com/rusneustroevkz/http-server/internal/product/handlers/graph"
+	"github.com/rusneustroevkz/http-server/internal/graph/resolvers"
+	productGraph "github.com/rusneustroevkz/http-server/internal/product/handlers/graph"
 	productGRPCHandlers "github.com/rusneustroevkz/http-server/internal/product/handlers/grpc"
 	productsRest "github.com/rusneustroevkz/http-server/internal/product/handlers/rest"
 	grpcServer "github.com/rusneustroevkz/http-server/internal/server/grpc"
@@ -46,7 +47,8 @@ func main() {
 			httpServer.NewGraphql,
 			productGRPCHandlers.NewProductsGRPCServer,
 			categoriesGRPCHandlers.NewCategoriesGRPCServer,
-			productsGraph.NewProductsGraph,
+			resolvers.NewResolver,
+			productGraph.NewProductGraph,
 			func(
 				cfg *config.Config,
 				log logger.Logger,

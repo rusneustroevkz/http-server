@@ -6,17 +6,16 @@ package resolvers
 
 import (
 	"context"
-	"fmt"
 
-	models_graph "github.com/rusneustroevkz/http-server/graph/models"
+	models_graph "github.com/rusneustroevkz/http-server/internal/graph/models"
 )
 
 // Update is the resolver for the update field.
 func (r *mutationResolver) Update(ctx context.Context) (*models_graph.ProductResponse, error) {
-	panic(fmt.Errorf("not implemented: Update - update"))
+	return r.product.Update(ctx)
 }
 
 // Get is the resolver for the get field.
 func (r *queryResolver) Get(ctx context.Context) (*models_graph.ProductResponse, error) {
-	panic(fmt.Errorf("not implemented: Get - get"))
+	return r.product.Get(ctx)
 }

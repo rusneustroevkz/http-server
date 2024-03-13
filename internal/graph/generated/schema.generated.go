@@ -10,7 +10,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	models_graph "github.com/rusneustroevkz/http-server/graph/models"
+	models_graph "github.com/rusneustroevkz/http-server/internal/graph/models"
 	"github.com/vektah/gqlparser/v2/ast"
 )
 
@@ -75,7 +75,7 @@ func (ec *executionContext) _Mutation_update(ctx context.Context, field graphql.
 	}
 	res := resTmp.(*models_graph.ProductResponse)
 	fc.Result = res
-	return ec.marshalOProductResponse2ᚖgithubᚗcomᚋrusneustroevkzᚋhttpᚑserverᚋgraphᚋmodelsᚐProductResponse(ctx, field.Selections, res)
+	return ec.marshalOProductResponse2ᚖgithubᚗcomᚋrusneustroevkzᚋhttpᚑserverᚋinternalᚋgraphᚋmodelsᚐProductResponse(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_update(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -120,7 +120,7 @@ func (ec *executionContext) _Query_get(ctx context.Context, field graphql.Collec
 	}
 	res := resTmp.(*models_graph.ProductResponse)
 	fc.Result = res
-	return ec.marshalOProductResponse2ᚖgithubᚗcomᚋrusneustroevkzᚋhttpᚑserverᚋgraphᚋmodelsᚐProductResponse(ctx, field.Selections, res)
+	return ec.marshalOProductResponse2ᚖgithubᚗcomᚋrusneustroevkzᚋhttpᚑserverᚋinternalᚋgraphᚋmodelsᚐProductResponse(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_get(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
