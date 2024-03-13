@@ -23,7 +23,10 @@ func NewHTTPServer(
 	restRoutes *chi.Mux,
 	log logger.Logger,
 ) *Server {
-	srv := &http.Server{Addr: fmt.Sprintf(":%d", cfg.HTTPServer.Port), Handler: restRoutes}
+	srv := &http.Server{
+		Addr:    fmt.Sprintf(":%d", cfg.HTTPServer.Port),
+		Handler: restRoutes,
+	}
 
 	return &Server{
 		log: log,
