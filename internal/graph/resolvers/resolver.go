@@ -1,7 +1,7 @@
 package resolvers
 
 import (
-	productGrap "github.com/rusneustroevkz/http-server/internal/product/handlers/graph"
+	productGrap "github.com/rusneustroevkz/http-server/src/product/handlers/graph"
 )
 
 // This file will not be regenerated automatically.

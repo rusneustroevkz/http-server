@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net"
 	"net/http"
@@ -37,7 +38,7 @@ func (s *Server) Start(_ context.Context) error {
 	}
 	s.log.Info("starting HTTP server", logger.String("addr", s.srv.Addr))
 	go func() {
-		if err := s.srv.Serve(listener); err != nil {
+		if err := s.srv.Serve(listener); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			s.log.Fatal("cannot HTTP start server", logger.Error(err), logger.String("port", s.srv.Addr))
 		}
 	}()

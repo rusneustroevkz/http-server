@@ -3,8 +3,9 @@ package grpc
 import (
 	"context"
 
-	productspb "github.com/rusneustroevkz/http-server/internal/product/handlers/grpc/pb"
 	"github.com/rusneustroevkz/http-server/pkg/logger"
+	productspb "github.com/rusneustroevkz/http-server/src/product/handlers/grpc/pb"
+
 	"google.golang.org/grpc"
 )
 

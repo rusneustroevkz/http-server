@@ -3,7 +3,7 @@ package grpc
 import (
 	"context"
 
-	categoriesspb "github.com/rusneustroevkz/http-server/internal/categories/handlers/grpc/pb"
+	categoriesspb "github.com/rusneustroevkz/http-server/src/categories/handlers/grpc/pb"
 	"google.golang.org/grpc"
 )
 

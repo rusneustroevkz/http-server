@@ -3,15 +3,16 @@ package main
 import (
 	"context"
 
-	categoriesGRPCHandlers "github.com/rusneustroevkz/http-server/internal/categories/handlers/grpc"
 	"github.com/rusneustroevkz/http-server/internal/config"
 	"github.com/rusneustroevkz/http-server/internal/graph/resolvers"
-	productGraph "github.com/rusneustroevkz/http-server/internal/product/handlers/graph"
-	productGRPCHandlers "github.com/rusneustroevkz/http-server/internal/product/handlers/grpc"
-	productsRest "github.com/rusneustroevkz/http-server/internal/product/handlers/rest"
+	kafkaClient "github.com/rusneustroevkz/http-server/internal/kafka"
 	grpcServer "github.com/rusneustroevkz/http-server/internal/server/grpc"
 	httpServer "github.com/rusneustroevkz/http-server/internal/server/http"
 	"github.com/rusneustroevkz/http-server/pkg/logger"
+	categoriesGRPCHandlers "github.com/rusneustroevkz/http-server/src/categories/handlers/grpc"
+	productGraph "github.com/rusneustroevkz/http-server/src/product/handlers/graph"
+	productGRPCHandlers "github.com/rusneustroevkz/http-server/src/product/handlers/grpc"
+	productsRest "github.com/rusneustroevkz/http-server/src/product/handlers/rest"
 
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/fx"
@@ -41,13 +42,17 @@ func main() {
 			logger.NewLogger,
 			httpServer.NewHTTPServer,
 			productsRest.NewProductsRest,
-			httpServer.NewGraphql,
 			productGRPCHandlers.NewProductsGRPCServer,
 			categoriesGRPCHandlers.NewCategoriesGRPCServer,
 			resolvers.NewResolver,
 			productGraph.NewProductGraph,
-			func(productRest *productsRest.ProductsRest, graphRoutes *httpServer.Graphql) *chi.Mux {
-				return httpServer.Routes(productRest, graphRoutes)
+			kafkaClient.NewClient,
+			func(
+				cfg *config.Config,
+				resolver *resolvers.Resolver,
+				productRest *productsRest.ProductsRest,
+			) *chi.Mux {
+				return httpServer.Routes(cfg, resolver, productRest)
 			},
 			func(
 				cfg *config.Config,
@@ -83,6 +88,16 @@ func main() {
 					},
 					OnStop: func(ctx context.Context) error {
 						return srv.Stop(ctx)
+					},
+				})
+			},
+			func(lc fx.Lifecycle, client *kafkaClient.Client) {
+				lc.Append(fx.Hook{
+					OnStart: func(ctx context.Context) error {
+						return client.Run(ctx)
+					},
+					OnStop: func(ctx context.Context) error {
+						return client.Stop(ctx)
 					},
 				})
 			},

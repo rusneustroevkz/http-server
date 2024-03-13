@@ -5,21 +5,18 @@ http-server:
   port: 8080
   test: true
 kafka:
+  verbose: true
   client-name: backend-example
   brokers:
-    - localhost:9092
+    - localhost:9094
   consumers:
     - name: test-consumer-name
+      consumer-group: test-consumer
       topics:
-        - name: test-consumer-topic-name
-          topics:
-            - test-consumer-topic
+        - test-consumer-topic
       config:
   producers:
     - name: test-producer-name
-      topics:
-        - name: test-producer-topic-name
-          topics:
-            - test-producer-topic
+      topic: test-producer-topic
       config:
 

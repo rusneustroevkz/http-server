@@ -19,6 +19,7 @@ type Server struct {
 }
 
 type Kafka struct {
+	Verbose    bool       `yaml:"verbose"`
 	ClientName string     `yaml:"client-name"`
 	Brokers    []string   `yaml:"brokers"`
 	Consumers  []Consumer `yaml:"consumers"`
@@ -26,20 +27,16 @@ type Kafka struct {
 }
 
 type Consumer struct {
-	Name   string         `yaml:"name"`
-	Topics []Topic        `yaml:"topics"`
-	Config ConsumerConfig `yaml:"config"`
+	Name          string         `yaml:"name"`
+	ConsumerGroup string         `yaml:"consumer-group"`
+	Topics        []string       `yaml:"topics"`
+	Config        ConsumerConfig `yaml:"config"`
 }
 
 type Producer struct {
 	Name   string         `yaml:"name"`
-	Topics []Topic        `yaml:"topics"`
+	Topic  string         `yaml:"topics"`
 	Config ProducerConfig `yaml:"config"`
-}
-
-type Topic struct {
-	Name   string   `yaml:"name"`
-	Topics []string `yaml:"topics"`
 }
 
 type ConsumerConfig struct {
