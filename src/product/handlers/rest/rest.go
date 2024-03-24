@@ -52,7 +52,7 @@ func (h *ProductsRest) Routes() *chi.Mux {
 // @Failure      500  {object}  errs.Error
 // @Router       /products/{id} [get]
 func (h *ProductsRest) Get(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("get"))
+	w.WriteHeader(http.StatusOK)
 }
 
 // List godoc
@@ -67,7 +67,7 @@ func (h *ProductsRest) Get(w http.ResponseWriter, r *http.Request) {
 // @Failure      500  {object}  errs.Error
 // @Router       /products [get]
 func (h *ProductsRest) List(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("list"))
+	w.WriteHeader(http.StatusOK)
 }
 
 // Delete godoc
@@ -82,7 +82,7 @@ func (h *ProductsRest) List(w http.ResponseWriter, r *http.Request) {
 // @Failure      500  {object}  errs.Error
 // @Router       /products [delete]
 func (h *ProductsRest) Delete(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("delete"))
+	w.WriteHeader(http.StatusOK)
 }
 
 // Save godoc
@@ -97,7 +97,7 @@ func (h *ProductsRest) Delete(w http.ResponseWriter, r *http.Request) {
 // @Failure      500  {object}  errs.Error
 // @Router       /products [put]
 func (h *ProductsRest) Save(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("put"))
+	w.WriteHeader(http.StatusOK)
 }
 
 // Create godoc
@@ -112,7 +112,7 @@ func (h *ProductsRest) Save(w http.ResponseWriter, r *http.Request) {
 // @Failure      500  {object}  errs.Error
 // @Router       /products [post]
 func (h *ProductsRest) Create(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("post"))
+	w.WriteHeader(http.StatusCreated)
 }
 
 // Update godoc
@@ -127,5 +127,5 @@ func (h *ProductsRest) Create(w http.ResponseWriter, r *http.Request) {
 // @Failure      500  {object}  errs.Error
 // @Router       /products [patch]
 func (h *ProductsRest) Update(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("patch"))
+	w.WriteHeader(http.StatusOK)
 }

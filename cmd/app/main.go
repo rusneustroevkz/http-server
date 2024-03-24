@@ -41,7 +41,7 @@ func main() {
 		fx.Provide(
 			config.NewConfig,
 			logger.NewLogger,
-			httpServer.NewHTTPServer,
+			httpServer.NewPublicServer,
 			productsRest.NewProductsRest,
 			productGRPCHandlers.NewProductsGRPCServer,
 			categoriesGRPCHandlers.NewCategoriesGRPCServer,
@@ -53,11 +53,12 @@ func main() {
 			observers.NewCollectProduct,
 			productKafka.NewPublisher,
 			httpServer.NewMetricsServer,
+			httpServer.NewPrivateServer,
 		),
 		fx.Invoke(
 			func(
 				lc fx.Lifecycle,
-				srv *httpServer.Server,
+				srv *httpServer.PublicServer,
 				router *httpServer.Router,
 				productRest *productsRest.ProductsRest,
 			) {
@@ -76,6 +77,21 @@ func main() {
 			func(
 				lc fx.Lifecycle,
 				srv *httpServer.MetricsServer,
+			) {
+				lc.Append(fx.Hook{
+					OnStart: func(ctx context.Context) error {
+						srv.SetRoutes()
+
+						return srv.Start(ctx)
+					},
+					OnStop: func(ctx context.Context) error {
+						return srv.Stop(ctx)
+					},
+				})
+			},
+			func(
+				lc fx.Lifecycle,
+				srv *httpServer.PrivateServer,
 			) {
 				lc.Append(fx.Hook{
 					OnStart: func(ctx context.Context) error {

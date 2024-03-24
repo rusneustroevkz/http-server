@@ -9,7 +9,8 @@ import (
 
 type Config struct {
 	GRPCServer    Server `yaml:"grpc-server"`
-	HTTPServer    Server `yaml:"http-server"`
+	PublicServer  Server `yaml:"public-server"`
+	PrivateServer Server `yaml:"private-server"`
 	MetricsServer Server `yaml:"metrics-server"`
 	Kafka         Kafka  `yaml:"kafka"`
 	App           App    `yaml:"app"`
@@ -20,7 +21,8 @@ type App struct {
 }
 
 type Server struct {
-	Port int64 `yaml:"port"`
+	Port    int64 `yaml:"port"`
+	Timeout int64 `yaml:"timeout"`
 }
 
 type Kafka struct {
