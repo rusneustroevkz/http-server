@@ -15,6 +15,11 @@ kafka:
       topics:
         - test-consumer-topic
       config:
+    - name: test-consumer-name1
+      consumer-group: test-consumer1
+      topics:
+        - test-consumer-topic1
+      config:
   producers:
     - name: test-producer-name
       topic: test-producer-topic

@@ -4,9 +4,10 @@ import (
 	"context"
 	"errors"
 
-	"github.com/IBM/sarama"
 	"github.com/rusneustroevkz/http-server/internal/config"
 	"github.com/rusneustroevkz/http-server/pkg/logger"
+
+	"github.com/IBM/sarama"
 )
 
 type Client struct {
@@ -43,20 +44,20 @@ func (k *Client) Run(_ context.Context) error {
 				k.log.Fatal("Error creating consumer group consumerGroup", logger.Error(err))
 			}
 			k.consumerGroups = append(k.consumerGroups, consumerGroup)
+			k.log.Info("topic started", logger.String("name", c.Name))
 
 			for k.keepRunning {
 				if err := consumerGroup.Consume(ctx, c.Topics, &consumer); err != nil {
 					if errors.Is(err, sarama.ErrClosedConsumerGroup) {
 						return
 					}
-					k.log.Fatal("Error from consumer", logger.Error(err))
+					k.log.Error("Error from consumer", logger.Error(err))
 				}
 
 				if ctx.Err() != nil {
 					return
 				}
 			}
-
 		}()
 	}
 
