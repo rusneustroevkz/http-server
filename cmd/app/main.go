@@ -14,7 +14,6 @@ import (
 	productGRPCHandlers "github.com/rusneustroevkz/http-server/src/product/handlers/grpc"
 	productsRest "github.com/rusneustroevkz/http-server/src/product/handlers/rest"
 
-	"github.com/go-chi/chi/v5"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
 )
@@ -47,31 +46,21 @@ func main() {
 			resolvers.NewResolver,
 			productGraph.NewProductGraph,
 			kafkaClient.NewClient,
-			func(
-				cfg *config.Config,
-				resolver *resolvers.Resolver,
-				productRest *productsRest.ProductsRest,
-			) *chi.Mux {
-				return httpServer.Routes(cfg, resolver, productRest)
-			},
-			func(
-				cfg *config.Config,
-				log logger.Logger,
-				productsGRPCServer *productGRPCHandlers.ProductsGRPCServer,
-				categoriesGRPCServer *categoriesGRPCHandlers.CategoriesGRPCServer,
-			) *grpcServer.Server {
-				return grpcServer.NewGRPCServer(
-					cfg,
-					log,
-					productsGRPCServer,
-					categoriesGRPCServer,
-				)
-			},
+			httpServer.NewRouter,
+			grpcServer.NewGRPCServer,
 		),
 		fx.Invoke(
-			func(lc fx.Lifecycle, srv *httpServer.Server) {
+			func(
+				lc fx.Lifecycle,
+				srv *httpServer.Server,
+				router *httpServer.Router,
+				productRest *productsRest.ProductsRest,
+			) {
 				lc.Append(fx.Hook{
 					OnStart: func(ctx context.Context) error {
+						routers := router.GetRouters(productRest)
+						srv.MountRoutes(routers)
+
 						return srv.Start(ctx)
 					},
 					OnStop: func(ctx context.Context) error {
@@ -79,10 +68,15 @@ func main() {
 					},
 				})
 			},
-			func(lc fx.Lifecycle, srv *grpcServer.Server, petsGRPCServer *petsGRPCHandlers.PetsGRPCServer) {
+			func(
+				lc fx.Lifecycle,
+				srv *grpcServer.Server,
+				productsGRPCServer *productGRPCHandlers.ProductsGRPCServer,
+				categoriesGRPCServer *categoriesGRPCHandlers.CategoriesGRPCServer,
+			) {
 				lc.Append(fx.Hook{
 					OnStart: func(ctx context.Context) error {
-						srv.MountServices(petsGRPCServer)
+						srv.MountServices(productsGRPCServer, categoriesGRPCServer)
 
 						return srv.Start(ctx)
 					},

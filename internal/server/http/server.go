@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/go-chi/chi/v5"
 	"net"
 	"net/http"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/rusneustroevkz/http-server/internal/config"
 	"github.com/rusneustroevkz/http-server/pkg/logger"
 )
@@ -20,12 +20,10 @@ type Server struct {
 
 func NewHTTPServer(
 	cfg *config.Config,
-	restRoutes *chi.Mux,
 	log logger.Logger,
 ) *Server {
 	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%d", cfg.HTTPServer.Port),
-		Handler: restRoutes,
+		Addr: fmt.Sprintf(":%d", cfg.HTTPServer.Port),
 	}
 
 	return &Server{
@@ -46,6 +44,10 @@ func (s *Server) Start(_ context.Context) error {
 		}
 	}()
 	return nil
+}
+
+func (s *Server) MountRoutes(mux *chi.Mux) {
+	s.srv.Handler = mux
 }
 
 func (s *Server) Stop(ctx context.Context) error {
