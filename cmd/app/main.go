@@ -3,13 +3,13 @@ package main
 import (
 	"context"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/rusneustroevkz/http-server/internal/config"
 	petsGRPCHandlers "github.com/rusneustroevkz/http-server/internal/pets/handlers/grpc"
 	petsHTTPHandlers "github.com/rusneustroevkz/http-server/internal/pets/handlers/http"
 	grpcServer "github.com/rusneustroevkz/http-server/internal/server/grpc"
 	httpServer "github.com/rusneustroevkz/http-server/internal/server/http"
 	"github.com/rusneustroevkz/http-server/pkg/logger"
+
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
 )
@@ -37,21 +37,9 @@ func main() {
 			logger.NewLogger,
 			httpServer.NewHTTPServer,
 			petsHTTPHandlers.NewPetsHTTPHandler,
-			func(petsHTTPHandler *petsHTTPHandlers.PetsHTTPHandler) *chi.Mux {
-				return httpServer.MountRoutes(petsHTTPHandler)
-			},
+			httpServer.MountRoutes,
 			petsGRPCHandlers.NewPetsGRPCServer,
-			func(
-				cfg *config.Config,
-				log logger.Logger,
-				petsGRPCServer *petsGRPCHandlers.PetsGRPCServer,
-			) *grpcServer.Server {
-				return grpcServer.NewGRPCServer(
-					cfg,
-					log,
-					petsGRPCServer,
-				)
-			},
+			grpcServer.NewGRPCServer,
 		),
 		fx.Invoke(
 			func(lc fx.Lifecycle, srv *httpServer.Server) {
@@ -64,10 +52,10 @@ func main() {
 					},
 				})
 			},
-			func(lc fx.Lifecycle, srv *grpcServer.Server) {
+			func(lc fx.Lifecycle, srv *grpcServer.Server, petsGRPCServer *petsGRPCHandlers.PetsGRPCServer) {
 				lc.Append(fx.Hook{
 					OnStart: func(ctx context.Context) error {
-						srv.MountServices()
+						srv.MountServices(petsGRPCServer)
 
 						return srv.Start(ctx)
 					},

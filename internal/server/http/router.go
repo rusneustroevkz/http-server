@@ -1,8 +1,9 @@
 package http
 
 import (
-	"github.com/go-chi/chi/v5"
 	_ "github.com/rusneustroevkz/http-server/docs"
+
+	"github.com/go-chi/chi/v5"
 	httpSwagger "github.com/swaggo/http-swagger"
 	"go.uber.org/fx"
 )

@@ -7,6 +7,7 @@ import (
 
 	"github.com/rusneustroevkz/http-server/internal/config"
 	"github.com/rusneustroevkz/http-server/pkg/logger"
+
 	"google.golang.org/grpc"
 )
 
@@ -22,14 +23,13 @@ type service interface {
 	Service() any
 }
 
-func NewGRPCServer(cfg *config.Config, log logger.Logger, services ...service) *Server {
+func NewGRPCServer(cfg *config.Config, log logger.Logger) *Server {
 	server := grpc.NewServer()
 
 	return &Server{
-		cfg:      cfg,
-		log:      log,
-		server:   server,
-		services: services,
+		cfg:    cfg,
+		log:    log,
+		server: server,
 	}
 }
 
@@ -37,8 +37,8 @@ func (s *Server) Server() *grpc.Server {
 	return s.server
 }
 
-func (s *Server) MountServices() {
-	for _, ss := range s.services {
+func (s *Server) MountServices(services ...service) {
+	for _, ss := range services {
 		s.server.RegisterService(ss.Desc(), ss.Service())
 	}
 }
