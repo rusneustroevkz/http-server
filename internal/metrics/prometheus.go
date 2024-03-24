@@ -2,9 +2,12 @@ package metrics
 
 import (
 	"fmt"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promauto"
+	"net/http"
+	"time"
 )
 
 const (
@@ -13,20 +16,30 @@ const (
 )
 
 var (
-	httpRequestCount = promauto.NewCounterVec(prometheus.CounterOpts{
-		Namespace: namespace,
-		Subsystem: subsystem,
-		Name:      "http_request_total",
-		Help:      "Http request total count",
-	}, []string{"method", "code", "path"})
+	httpRequestHistogram = promauto.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Namespace:                       namespace,
+			Subsystem:                       subsystem,
+			Name:                            "http_request_histogram",
+			Help:                            "",
+			ConstLabels:                     nil,
+			Buckets:                         prometheus.DefBuckets,
+			NativeHistogramBucketFactor:     0,
+			NativeHistogramZeroThreshold:    0,
+			NativeHistogramMaxBucketNumber:  0,
+			NativeHistogramMinResetDuration: 0,
+			NativeHistogramMaxZeroThreshold: 0,
+		},
+		[]string{"method", "path", "status"},
+	)
 )
 
-func httpRequestCountInc(method, path string, code int64) {
-	httpRequestCount.With(prometheus.Labels{
+func httpRequestCountInc(method, path string, status int, start time.Time) {
+	httpRequestHistogram.With(prometheus.Labels{
 		"method": method,
 		"path":   path,
-		"code":   fmt.Sprintf("%d", code),
-	}).Inc()
+		"status": fmt.Sprintf("%d", status),
+	}).Observe(time.Since(start).Seconds())
 }
 
 func init() {
@@ -35,6 +48,19 @@ func init() {
 	reg.MustRegister(
 		collectors.NewGoCollector(),
 		collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}),
-		httpRequestCount,
+		httpRequestHistogram,
 	)
+}
+
+func RequestMetrics(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		ww := middleware.NewWrapResponseWriter(w, r.ProtoMajor)
+		t1 := time.Now()
+		defer func() {
+			httpRequestCountInc(r.Method, r.RequestURI, ww.Status(), t1)
+		}()
+
+		next.ServeHTTP(ww, r)
+	}
+	return http.HandlerFunc(fn)
 }

@@ -1,6 +1,7 @@
 package http
 
 import (
+	"github.com/rusneustroevkz/http-server/internal/metrics"
 	"time"
 
 	_ "github.com/rusneustroevkz/http-server/docs"
@@ -41,6 +42,7 @@ func (r *Router) Mount(routes ...Route) *chi.Mux {
 	}
 	mux.Use(middleware.Recoverer)
 	mux.Use(middleware.Timeout(time.Second * time.Duration(r.cfg.PublicServer.Timeout)))
+	mux.Use(metrics.RequestMetrics)
 
 	for _, route := range routes {
 		mux.Mount(route.Pattern(), route.Routes())
