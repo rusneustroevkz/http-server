@@ -58,8 +58,8 @@ func main() {
 			) {
 				lc.Append(fx.Hook{
 					OnStart: func(ctx context.Context) error {
-						routers := router.GetRouters(productRest)
-						srv.MountRoutes(routers)
+						routers := router.Mount(productRest)
+						srv.SetRoutes(routers)
 
 						return srv.Start(ctx)
 					},

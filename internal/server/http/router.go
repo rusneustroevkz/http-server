@@ -26,7 +26,7 @@ func NewRouter(cfg *config.Config, resolver *resolvers.Resolver) *Router {
 	}
 }
 
-func (r *Router) GetRouters(routes ...Route) *chi.Mux {
+func (r *Router) Mount(routes ...Route) *chi.Mux {
 	mux := chi.NewRouter()
 
 	for _, route := range routes {

@@ -46,7 +46,7 @@ func (s *Server) Start(_ context.Context) error {
 	return nil
 }
 
-func (s *Server) MountRoutes(mux *chi.Mux) {
+func (s *Server) SetRoutes(mux *chi.Mux) {
 	s.srv.Handler = mux
 }
 
