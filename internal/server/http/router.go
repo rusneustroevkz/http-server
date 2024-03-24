@@ -2,34 +2,42 @@ package http
 
 import (
 	_ "github.com/rusneustroevkz/http-server/docs"
+	"github.com/rusneustroevkz/http-server/internal/config"
+	"github.com/rusneustroevkz/http-server/internal/graph/generated"
+	"github.com/rusneustroevkz/http-server/internal/graph/resolvers"
 
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/handler/extension"
+	"github.com/99designs/gqlgen/graphql/handler/transport"
+	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/go-chi/chi/v5"
 	httpSwagger "github.com/swaggo/http-swagger"
-	"go.uber.org/fx"
 )
 
-func MountRoutes(routes ...Route) *chi.Mux {
-	mux := chi.NewMux()
+func Routes(cfg *config.Config, resolver *resolvers.Resolver, routes ...Route) *chi.Mux {
+	router := chi.NewRouter()
 
 	for _, route := range routes {
-		mux.Mount(route.Pattern(), route.Routes())
+		router.Mount(route.Pattern(), route.Routes())
 	}
 
-	mux.Get("/swagger/*", httpSwagger.Handler(httpSwagger.URL("doc.json")))
+	if !cfg.App.Production {
+		router.Get("/swagger/*", httpSwagger.Handler(httpSwagger.URL("doc.json")))
+		router.Handle("/graph/playground", playground.Handler("GraphQL playground", "/graph/query"))
+	}
 
-	return mux
+	schemaConfig := generated.Config{Resolvers: resolver}
+	schema := generated.NewExecutableSchema(schemaConfig)
+	srv := handler.New(schema)
+	srv.AddTransport(transport.POST{})
+	srv.Use(extension.Introspection{})
+	router.Handle("/graph/query", srv)
+
+	return router
 }
 
 type Route interface {
 	Routes() *chi.Mux
 
 	Pattern() string
-}
-
-func AsRoute(f any) any {
-	return fx.Annotate(
-		f,
-		fx.As(new(Route)),
-		fx.ResultTags(`group:"routes"`),
-	)
 }

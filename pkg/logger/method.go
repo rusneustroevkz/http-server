@@ -1,8 +1,10 @@
 package logger
 
-import "go.uber.org/zap"
+import (
+	"go.uber.org/zap"
+)
 
-func (l *log) Info(msg string, fields ...Field) {
+func (l *appLog) Info(msg string, fields ...Field) {
 	zf := make([]zap.Field, 0, cap(fields))
 	for _, field := range fields {
 		zf = append(zf, zap.Field(field))
@@ -10,7 +12,7 @@ func (l *log) Info(msg string, fields ...Field) {
 	l.log.Info(msg, zf...)
 }
 
-func (l *log) Fatal(msg string, fields ...Field) {
+func (l *appLog) Fatal(msg string, fields ...Field) {
 	zf := make([]zap.Field, 0, cap(fields))
 	for _, field := range fields {
 		zf = append(zf, zap.Field(field))

@@ -1,0 +1,19 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+input ProductRequest {
+    id: Int
+}
+
+type ProductResponse {
+    id: Int
+}
+
+extend type Query {
+    get: ProductResponse
+}
+
+extend type Mutation {
+    update: ProductResponse
+}

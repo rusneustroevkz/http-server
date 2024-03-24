@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net"
 	"net/http"
@@ -17,8 +18,15 @@ type Server struct {
 	srv *http.Server
 }
 
-func NewHTTPServer(cfg *config.Config, mux *chi.Mux, log logger.Logger) *Server {
-	srv := &http.Server{Addr: fmt.Sprintf(":%d", cfg.HTTPServer.Port), Handler: mux}
+func NewHTTPServer(
+	cfg *config.Config,
+	restRoutes *chi.Mux,
+	log logger.Logger,
+) *Server {
+	srv := &http.Server{
+		Addr:    fmt.Sprintf(":%d", cfg.HTTPServer.Port),
+		Handler: restRoutes,
+	}
 
 	return &Server{
 		log: log,
@@ -33,7 +41,7 @@ func (s *Server) Start(_ context.Context) error {
 	}
 	s.log.Info("starting HTTP server", logger.String("addr", s.srv.Addr))
 	go func() {
-		if err := s.srv.Serve(listener); err != nil {
+		if err := s.srv.Serve(listener); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			s.log.Fatal("cannot HTTP start server", logger.Error(err), logger.String("port", s.srv.Addr))
 		}
 	}()

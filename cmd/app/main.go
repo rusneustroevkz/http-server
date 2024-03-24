@@ -4,19 +4,24 @@ import (
 	"context"
 
 	"github.com/rusneustroevkz/http-server/internal/config"
-	petsGRPCHandlers "github.com/rusneustroevkz/http-server/internal/pets/handlers/grpc"
-	petsHTTPHandlers "github.com/rusneustroevkz/http-server/internal/pets/handlers/http"
+	"github.com/rusneustroevkz/http-server/internal/graph/resolvers"
+	kafkaClient "github.com/rusneustroevkz/http-server/internal/kafka"
 	grpcServer "github.com/rusneustroevkz/http-server/internal/server/grpc"
 	httpServer "github.com/rusneustroevkz/http-server/internal/server/http"
 	"github.com/rusneustroevkz/http-server/pkg/logger"
+	categoriesGRPCHandlers "github.com/rusneustroevkz/http-server/src/categories/handlers/grpc"
+	productGraph "github.com/rusneustroevkz/http-server/src/product/handlers/graph"
+	productGRPCHandlers "github.com/rusneustroevkz/http-server/src/product/handlers/grpc"
+	productsRest "github.com/rusneustroevkz/http-server/src/product/handlers/rest"
 
+	"github.com/go-chi/chi/v5"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
 )
 
 // @title Swagger Example API
 // @version 1.0
-// @description This is a sample server PetStore server.
+// @description This is a sample server Store server.
 // @termsOfService http://swagger.io/terms/
 
 // @contact.name API Support
@@ -36,10 +41,32 @@ func main() {
 			config.NewConfig,
 			logger.NewLogger,
 			httpServer.NewHTTPServer,
-			petsHTTPHandlers.NewPetsHTTPHandler,
-			httpServer.MountRoutes,
-			petsGRPCHandlers.NewPetsGRPCServer,
-			grpcServer.NewGRPCServer,
+			productsRest.NewProductsRest,
+			productGRPCHandlers.NewProductsGRPCServer,
+			categoriesGRPCHandlers.NewCategoriesGRPCServer,
+			resolvers.NewResolver,
+			productGraph.NewProductGraph,
+			kafkaClient.NewClient,
+			func(
+				cfg *config.Config,
+				resolver *resolvers.Resolver,
+				productRest *productsRest.ProductsRest,
+			) *chi.Mux {
+				return httpServer.Routes(cfg, resolver, productRest)
+			},
+			func(
+				cfg *config.Config,
+				log logger.Logger,
+				productsGRPCServer *productGRPCHandlers.ProductsGRPCServer,
+				categoriesGRPCServer *categoriesGRPCHandlers.CategoriesGRPCServer,
+			) *grpcServer.Server {
+				return grpcServer.NewGRPCServer(
+					cfg,
+					log,
+					productsGRPCServer,
+					categoriesGRPCServer,
+				)
+			},
 		),
 		fx.Invoke(
 			func(lc fx.Lifecycle, srv *httpServer.Server) {
@@ -61,6 +88,16 @@ func main() {
 					},
 					OnStop: func(ctx context.Context) error {
 						return srv.Stop(ctx)
+					},
+				})
+			},
+			func(lc fx.Lifecycle, client *kafkaClient.Client) {
+				lc.Append(fx.Hook{
+					OnStart: func(ctx context.Context) error {
+						return client.Run(ctx)
+					},
+					OnStop: func(ctx context.Context) error {
+						return client.Stop(ctx)
 					},
 				})
 			},
