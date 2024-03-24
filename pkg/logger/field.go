@@ -16,6 +16,10 @@ func Int64(key string, value int64) Field {
 	return Field(zap.Int64(key, value))
 }
 
+func Int(key string, value int) Field {
+	return Field(zap.Int(key, value))
+}
+
 func Any(key string, value any) Field {
 	return Field(zap.Any(key, value))
 }

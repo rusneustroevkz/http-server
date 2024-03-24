@@ -35,9 +35,10 @@ func NewRouter(cfg *config.Config, resolver *resolvers.Resolver, log logger.Logg
 func (r *Router) Mount(routes ...Route) *chi.Mux {
 	mux := chi.NewRouter()
 
-	//middleware.DefaultLogger
 	mux.Use(middleware.RequestID)
-	mux.Use(r.log.RequestLogger)
+	if r.cfg.App.RequestLogEnabled {
+		mux.Use(r.log.RequestLogger(r.log))
+	}
 	mux.Use(middleware.Recoverer)
 	mux.Use(middleware.Timeout(time.Second * time.Duration(r.cfg.PublicServer.Timeout)))
 

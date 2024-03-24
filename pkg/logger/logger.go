@@ -1,18 +1,20 @@
 package logger
 
 import (
-	"github.com/go-chi/chi/v5/middleware"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/go-chi/chi/v5/middleware"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 type Logger interface {
 	Logger() *zap.Logger
 	Std() *log.Logger
-	RequestLogger(next http.Handler) http.Handler
+	NewLogEntry(r *http.Request) middleware.LogEntry
+	RequestLogger(f middleware.LogFormatter) func(next http.Handler) http.Handler
 
 	Info(msg string, fields ...Field)
 	Fatal(msg string, fields ...Field)
@@ -43,21 +45,29 @@ func (l *appLog) Std() *log.Logger {
 	return l.std
 }
 
-func (l *appLog) RequestLogger(next http.Handler) http.Handler {
-	fn := func(w http.ResponseWriter, r *http.Request) {
-		t1 := time.Now()
-
-		defer func() {
-			l.Info(
-				"request log",
-				String("method", r.Method),
-				String("path", r.RequestURI),
-				Any("request_id", r.Context().Value(middleware.RequestIDKey)),
-				Any("duration", time.Since(t1).Milliseconds()),
-			)
-		}()
-
-		next.ServeHTTP(w, r)
+func (l *appLog) NewLogEntry(r *http.Request) middleware.LogEntry {
+	return &logEntry{
+		log: l,
 	}
-	return http.HandlerFunc(fn)
+}
+
+func (l *appLog) RequestLogger(f middleware.LogFormatter) func(next http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		fn := func(w http.ResponseWriter, r *http.Request) {
+			entry := f.NewLogEntry(r)
+			ww := middleware.NewWrapResponseWriter(w, r.ProtoMajor)
+
+			t1 := time.Now()
+			defer func() {
+				entry.Write(ww.Status(), ww.BytesWritten(), ww.Header(), time.Since(t1), entryFields{
+					path:      r.RequestURI,
+					requestID: r.Context().Value(middleware.RequestIDKey),
+					method:    r.Method,
+				})
+			}()
+
+			next.ServeHTTP(ww, middleware.WithLogEntry(r, entry))
+		}
+		return http.HandlerFunc(fn)
+	}
 }

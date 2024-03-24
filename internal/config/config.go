@@ -17,7 +17,8 @@ type Config struct {
 }
 
 type App struct {
-	Production bool `yaml:"production"`
+	Production        bool `yaml:"production"`
+	RequestLogEnabled bool `yaml:"request-log-enabled"`
 }
 
 type Server struct {

@@ -1,5 +1,6 @@
 app:
   production: false
+  request-log-enabled: true
 grpc-server:
   port: 9090
   timeout: 0
