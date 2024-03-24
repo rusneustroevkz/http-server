@@ -12,6 +12,8 @@ import (
 	categoriesGRPCHandlers "github.com/rusneustroevkz/http-server/src/categories/handlers/grpc"
 	productGraph "github.com/rusneustroevkz/http-server/src/product/handlers/graph"
 	productGRPCHandlers "github.com/rusneustroevkz/http-server/src/product/handlers/grpc"
+	productKafka "github.com/rusneustroevkz/http-server/src/product/handlers/kafka"
+	"github.com/rusneustroevkz/http-server/src/product/handlers/kafka/observers"
 	productsRest "github.com/rusneustroevkz/http-server/src/product/handlers/rest"
 
 	"go.uber.org/fx"
@@ -48,6 +50,8 @@ func main() {
 			kafkaClient.NewClient,
 			httpServer.NewRouter,
 			grpcServer.NewGRPCServer,
+			observers.NewCollectProduct,
+			productKafka.NewPublisher,
 		),
 		fx.Invoke(
 			func(
@@ -85,10 +89,14 @@ func main() {
 					},
 				})
 			},
-			func(lc fx.Lifecycle, client *kafkaClient.Client) {
+			func(
+				lc fx.Lifecycle,
+				client *kafkaClient.Client,
+				productObserver *observers.CollectProduct,
+			) {
 				lc.Append(fx.Hook{
 					OnStart: func(ctx context.Context) error {
-						return client.Run(ctx)
+						return client.Run(ctx, productObserver)
 					},
 					OnStop: func(ctx context.Context) error {
 						return client.Stop(ctx)

@@ -18,6 +18,11 @@ type Client struct {
 	keepRunning    bool
 }
 
+type handler interface {
+	Handle(data []byte) error
+	Consumer() *config.Consumer
+}
+
 func NewClient(cfg *config.Config, log logger.Logger) *Client {
 	saramaConfig := newSaramaConfig(cfg, log)
 	if cfg.Kafka.Verbose {
@@ -32,22 +37,30 @@ func NewClient(cfg *config.Config, log logger.Logger) *Client {
 	}
 }
 
-func (k *Client) Run(_ context.Context) error {
-	for _, c := range k.cfg.Kafka.Consumers {
-		c := c
-		consumer := Consumer{}
+func (k *Client) Run(_ context.Context, handlers ...handler) error {
+	for _, h := range handlers {
+		cfg := h.Consumer()
+		if cfg == nil {
+			k.log.Error("handler config is nil")
+			return nil
+		}
+
+		consumer := Consumer{
+			log:    k.log,
+			Handle: h.Handle,
+		}
 
 		go func() {
 			ctx := context.Background()
-			consumerGroup, err := sarama.NewConsumerGroup(k.cfg.Kafka.Brokers, c.ConsumerGroup, k.saramaConfig)
+			consumerGroup, err := sarama.NewConsumerGroup(k.cfg.Kafka.Brokers, cfg.ConsumerGroup, k.saramaConfig)
 			if err != nil {
 				k.log.Fatal("Error creating consumer group consumerGroup", logger.Error(err))
 			}
 			k.consumerGroups = append(k.consumerGroups, consumerGroup)
-			k.log.Info("topic started", logger.String("name", c.Name))
+			k.log.Info("topic started", logger.String("name", cfg.Name))
 
 			for k.keepRunning {
-				if err := consumerGroup.Consume(ctx, c.Topics, &consumer); err != nil {
+				if err := consumerGroup.Consume(ctx, cfg.Topics, &consumer); err != nil {
 					if errors.Is(err, sarama.ErrClosedConsumerGroup) {
 						return
 					}
