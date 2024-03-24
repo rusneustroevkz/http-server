@@ -4,6 +4,8 @@ grpc-server:
   port: 9090
 http-server:
   port: 8080
+metrics-server:
+  port: 2112
 kafka:
   verbose: false
   client-name: backend-example

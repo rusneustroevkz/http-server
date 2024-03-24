@@ -8,10 +8,11 @@ import (
 )
 
 type Config struct {
-	GRPCServer Server `yaml:"grpc-server"`
-	HTTPServer Server `yaml:"http-server"`
-	Kafka      Kafka  `yaml:"kafka"`
-	App        App    `yaml:"app"`
+	GRPCServer    Server `yaml:"grpc-server"`
+	HTTPServer    Server `yaml:"http-server"`
+	MetricsServer Server `yaml:"metrics-server"`
+	Kafka         Kafka  `yaml:"kafka"`
+	App           App    `yaml:"app"`
 }
 
 type App struct {

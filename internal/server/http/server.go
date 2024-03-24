@@ -4,12 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/go-chi/chi/v5"
 	"net"
 	"net/http"
 
 	"github.com/rusneustroevkz/http-server/internal/config"
 	"github.com/rusneustroevkz/http-server/pkg/logger"
+
+	"github.com/go-chi/chi/v5"
 )
 
 type Server struct {
@@ -40,7 +41,7 @@ func (s *Server) Start(_ context.Context) error {
 	s.log.Info("starting HTTP server", logger.String("addr", s.srv.Addr))
 	go func() {
 		if err := s.srv.Serve(listener); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			s.log.Fatal("cannot HTTP start server", logger.Error(err), logger.String("port", s.srv.Addr))
+			s.log.Fatal("cannot start HTTP server", logger.Error(err), logger.String("port", s.srv.Addr))
 		}
 	}()
 	return nil
