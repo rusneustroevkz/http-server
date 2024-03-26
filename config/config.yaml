@@ -10,9 +10,6 @@ public-server:
 private-server:
   port: 8081
   timeout: 0
-metrics-server:
-  port: 2112
-  timeout: 0
 kafka:
   verbose: false
   client-name: backend-example

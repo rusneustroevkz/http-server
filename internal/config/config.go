@@ -11,7 +11,6 @@ type Config struct {
 	GRPCServer    Server `yaml:"grpc-server"`
 	PublicServer  Server `yaml:"public-server"`
 	PrivateServer Server `yaml:"private-server"`
-	MetricsServer Server `yaml:"metrics-server"`
 	Kafka         Kafka  `yaml:"kafka"`
 	App           App    `yaml:"app"`
 }

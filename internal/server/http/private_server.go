@@ -12,6 +12,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type PrivateServer struct {
@@ -51,6 +52,7 @@ func (s *PrivateServer) Start(_ context.Context) error {
 func (s *PrivateServer) SetRoutes() {
 	r := chi.NewRouter()
 	r.Mount("/debug", middleware.Profiler())
+	r.Handle("/metrics", promhttp.Handler())
 	s.srv.Handler = r
 }
 

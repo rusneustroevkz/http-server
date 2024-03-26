@@ -52,7 +52,6 @@ func main() {
 			grpcServer.NewGRPCServer,
 			observers.NewCollectProduct,
 			productKafka.NewPublisher,
-			httpServer.NewMetricsServer,
 			httpServer.NewPrivateServer,
 		),
 		fx.Invoke(
@@ -66,21 +65,6 @@ func main() {
 					OnStart: func(ctx context.Context) error {
 						routers := router.Mount(productRest)
 						srv.SetRoutes(routers)
-
-						return srv.Start(ctx)
-					},
-					OnStop: func(ctx context.Context) error {
-						return srv.Stop(ctx)
-					},
-				})
-			},
-			func(
-				lc fx.Lifecycle,
-				srv *httpServer.MetricsServer,
-			) {
-				lc.Append(fx.Hook{
-					OnStart: func(ctx context.Context) error {
-						srv.SetRoutes()
 
 						return srv.Start(ctx)
 					},
