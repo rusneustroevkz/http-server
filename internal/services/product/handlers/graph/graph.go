@@ -2,9 +2,9 @@ package graph
 
 import (
 	"context"
+	"github.com/rusneustroevkz/http-server/pkg/pointer"
 
 	models_graph "github.com/rusneustroevkz/http-server/internal/graph/models"
-	"github.com/rusneustroevkz/http-server/utils/pointer"
 )
 
 type ProductGraph struct {
